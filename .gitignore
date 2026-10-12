@@ -1,0 +1,6 @@
+external/
+*.zip
+*.bin
+*.sub
+*.ir
+*.json
