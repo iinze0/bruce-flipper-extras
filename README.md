@@ -1,37 +1,26 @@
 # bruce-flipper-extras
 
-This repository is a safe, centralized index and downloader for Bruce / Flipper-style resources. It is intentionally designed to keep one place for links, categories, and local acquisition scripts without committing third-party payload archives directly into Git history.
+A single repo for Bruce / Flipper-style resources, sorted by category and ready to fetch locally.
 
-What this repo includes:
-- Bruce themes and UI packs
-- JavaScript app packs and community scripts
+This repository is organized as a source catalog and downloader utility rather than a direct mirror of third-party payload archives. The goal is to centralize the important repositories in one place, keep the main repo lightweight, and let you pull the actual files into `external/` only when needed.
+
+## Categories
+
+- Bruce themes
+- Bruce JS apps and scripts
 - SD card / firmware asset packs
-- Sub-GHz regional references and large public databases
-- IR, BadUSB, and NFC resource indexes
-- A simple fetch script that clones selected public repositories into `external/`
+- Sub-GHz regional collections
+- IR packs
+- BadUSB payload libraries
+- NFC / RFID collections
+- General Flipper / Flipper-style collections
 
-Important safety and legal note:
-- Review all files before using them on hardware.
-- Transmit only on legally permitted frequencies in your region.
-- This repo does not include or mirror every payload dump or archive from upstream sources.
-- A lot of community collections contain tools, scripts, or payloads that should be reviewed and used with caution.
+## Folder structure
 
-Recommended placement on SD card:
-- Themes: `/Themes/` on FAT32 or LittleFS, depending on your build
-- JS scripts: `/BruceJS/<Category>/`
-- More general assets: follow the target firmware's SD layout for your specific port
-
-Regional frequency reminder:
-- EU / Europe: often 433.92 MHz and 868 MHz
-- US / North America: often 315 MHz, 433.92 MHz, and 915 MHz
-- AU / NZ: usually 433.92 MHz, with some 915 MHz devices
-- Always confirm what is legal where you are before transmitting
-
-## Structure
-
-- `external/` - populated by the downloader script (gitignored)
-- `docs/source-catalog.md` - organized catalog of source repos
-- `scripts/fetch_sources.sh` - downloads community repos into `external/`
+- `external/` — fetched repos live here locally; this directory is ignored by git
+- `docs/source-catalog.md` — sorted source catalog
+- `scripts/fetch_sources.sh` — downloads the upstream repos into `external/`
+- `README.md` — overview and quick-start
 
 ## Quick start
 
@@ -40,43 +29,16 @@ chmod +x scripts/fetch_sources.sh
 ./scripts/fetch_sources.sh
 ```
 
-This will clone the curated sources into `external/` under the repo root.
+This will clone the curated upstream repos into `external/` under the repo root.
 
-## Categories covered
+## Registry of sources
 
-### Bruce
-- Themes
-- JS scripts and app packs
-- Bruce-specific SD packs and hubs
+See the full catalog here:
 
-### Flipper-style port (Sor3nt)
-- `sdcard.zip` / asset packs
-- desktop companion utilities
-- boot and UI assets
-
-### Sub-GHz by region
-- EU / Europe
-- US / North America
-- Australia / NZ
-- large general collections and mixed-region dumps
-
-### Infrared
-- universal remote packs
-- IR DB sources
-
-### BadUSB
-- Duckys and payload libraries
-
-### NFC / RFID
-- amiibo and contactless sample collections
-
-## Source catalog
-
-See the detailed index here:
 - `docs/source-catalog.md`
 
-## License and usage
+## Notes
 
-This repository is meant to organize references and helper tooling. If a source repository has stricter licensing, review that upstream repo before copying or redistributing files.
-
-Keep this repository focused on indexes, documentation, and local fetch automation unless you specifically intend to mirror and distribute upstream content under compatible terms.
+- Always review files before using them on hardware.
+- Use only on frequencies legal in your region.
+- This repo is intended to organize, index, and fetch upstream sources. It does not silently mirror or redistribute every upstream archive.
