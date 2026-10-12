@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bruce / Flipper Web Flasher</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 2rem; }
+      .group { margin-bottom: 1.5rem; }
+      .row { display: flex; align-items: center; gap: 0.5rem; }
+      ul { list-style: none; padding-left: 0; }
+      li { margin: 0.25rem 0; }
+      pre { background: #f3f4f6; border-radius: 8px; padding: 1rem; overflow: auto; }
+      button { padding: 0.6rem 1rem; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <h1>Bruce / Flipper Web Flasher</h1>
+    <p>Detected removable drives:</p>
+    <ul>
+      {% for d in drives %}
+        <li>{{ d }}</li>
+      {% else %}
+        <li>None detected</li>
+      {% endfor %}
+    </ul>
+
+    <div class="row">
+      <label for="target">Target mount path:</label>
+      <input id="target" type="text" size="60" value="{{ drives[0] if drives else '' }}">
+    </div>
+
+    <div id="category-container">
+      {% for category, files in files.items() %}
+        <div class="group">
+          <h3>{{ category }} ({{ files|length }})</h3>
+          <label><input type="checkbox" class="category-toggle" data-category="{{ category }}"> select all</label>
+          <ul>
+            {% for f in files[:200] %}
+              <li><label><input type="checkbox" class="file-checkbox" data-path="{{ f.path }}"> {{ f.repo }} / {{ f.name }}</label></li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    </div>
+
+    <button id="flash-btn">Flash selected</button>
+    <pre id="result"></pre>
+
+    <script>
+      document.querySelectorAll('.category-toggle').forEach(toggle => {
+        toggle.addEventListener('change', () => {
+          const category = toggle.dataset.category;
+          const group = toggle.closest('.group');
+          group.querySelectorAll('.file-checkbox').forEach(cb => cb.checked = toggle.checked);
+        });
+      });
+
+      document.getElementById('flash-btn').addEventListener('click', async () => {
+        const target = document.getElementById('target').value.trim();
+        const selection = Array.from(document.querySelectorAll('.file-checkbox:checked')).map(cb => cb.dataset.path);
+
+        if (!target) {
+          alert('Enter a target mount path.');
+          return;
+        }
+
+        if (selection.length === 0) {
+          alert('Select at least one file.');
+          return;
+        }
+
+        const ok = confirm(`Copy ${selection.length} files to ${target}?`);
+        if (!ok) return;
+
+        const resp = await fetch('/api/flash', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ target, selection })
+        });
+
+        const data = await resp.json();
+        document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+      });
+    </script>
+  </body>
+</html>
